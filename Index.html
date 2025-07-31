@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Evidencias GA7-220501096-AA1 - Plan de Trabajo</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      .header h1 {
+        color: #2c3e50;
+        font-size: 2.2rem;
+        margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .header p {
+        color: #7f8c8d;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .code-reference {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        font-weight: bold;
+        display: inline-block;
+        margin-top: 1rem;
+      }
+
+      .progress-bar {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        height: 8px;
+        margin: 1rem 0;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        background: linear-gradient(90deg, #4caf50, #2196f3);
+        height: 100%;
+        width: 0%;
+        border-radius: 10px;
+        transition: width 0.3s ease;
+      }
+
+      .evidence {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .evidence:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .evidence-header {
+        padding: 1.5rem;
+        cursor: pointer;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .evidence-header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      .evidence:hover .evidence-header::before {
+        left: 100%;
+      }
+
+      .evidence-code {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        margin-right: 1rem;
+        font-weight: bold;
+      }
+
+      .evidence-type {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 0.2rem 0.6rem;
+        border-radius: 10px;
+        font-size: 0.7rem;
+        margin-left: 0.5rem;
+      }
+
+      .evidence-title {
+        display: block;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+      }
+
+      .evidence-content {
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .evidence.active .evidence-content {
+        max-height: 3000px;
+        padding: 1.5rem;
+      }
+
+      .evidence-description {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        border-left: 4px solid #667eea;
+      }
+
+      .document-structure {
+        background: #e3f2fd;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        border-left: 4px solid #2196f3;
+      }
+
+      .deliverables {
+        background: #e8f5e8;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        border-left: 4px solid #4caf50;
+      }
+
+      .format-info {
+        background: #fff3e0;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        border-left: 4px solid #ff9800;
+      }
+
+      .exercise-steps {
+        background: #f3e5f5;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        border-left: 4px solid #9c27b0;
+      }
+
+      .checklist {
+        list-style: none;
+        padding: 0;
+      }
+
+      .checklist li {
+        padding: 0.5rem 0;
+        position: relative;
+        padding-left: 2rem;
+        cursor: pointer;
+        transition: color 0.3s ease;
+      }
+
+      .checklist li::before {
+        content: "☐";
+        position: absolute;
+        left: 0;
+        color: #667eea;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+      }
+
+      .checklist li.completed::before {
+        content: "☑";
+        color: #4caf50;
+      }
+
+      .checklist li.completed {
+        color: #4caf50;
+        text-decoration: line-through;
+      }
+
+      .status-indicator {
+        float: right;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      .status-pending {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .status-progress {
+        background: #d1ecf1;
+        color: #0c5460;
+      }
+
+      .status-completed {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .expand-icon {
+        float: right;
+        transition: transform 0.3s ease;
+      }
+
+      .evidence.active .expand-icon {
+        transform: rotate(180deg);
+      }
+
+      .command-box {
+        background: #2d3748;
+        color: #e2e8f0;
+        padding: 1rem;
+        border-radius: 8px;
+        font-family: "Courier New", monospace;
+        margin: 0.5rem 0;
+        overflow-x: auto;
+      }
+
+      .command-box code {
+        color: #68d391;
+      }
+
+      .footer {
+        text-align: center;
+        padding: 2rem;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .table-preview {
+        background: #f9f9f9;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        border: 1px solid #ddd;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 10px;
+        }
+
+        .header h1 {
+          font-size: 1.6rem;
+        }
+
+        .evidence-header {
+          padding: 1rem;
+        }
+
+        .evidence-content {
+          padding: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>📋 Evidencias de Aprendizaje</h1>
+        <p>Construcción de Software e Integración Continua</p>
+        <div class="code-reference">GA7-220501096-AA1</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <p id="progressText">Progreso: 0% completado</p>
+      </div>
+
+      <!-- EV01 -->
+      <div class="evidence" id="ev01">
+        <div class="evidence-header" onclick="toggleEvidence('ev01')">
+          <span class="evidence-code">EV01</span>
+          <span class="evidence-type">Conocimiento</span>
+          <span class="evidence-title"
+            >Informe Técnico de Plan de Trabajo para Construcción de
+            Software</span
+          >
+          <span class="status-indicator status-pending">Pendiente</span>
+          <span class="expand-icon">▼</span>
+        </div>
+        <div class="evidence-content">
+          <div class="evidence-description">
+            <h4>📝 Descripción</h4>
+            <p>
+              Con base en las características del software a desarrollar,
+              realice un informe técnico especificando herramientas y
+              tecnologías de versionamiento a utilizar según lo visto en
+              componentes Integración continua.
+            </p>
+          </div>
+
+          <div class="document-structure">
+            <h4>📄 Estructura Mínima del Documento</h4>
+            <ul class="checklist">
+              <li onclick="toggleCheck(this)">Portada</li>
+              <li onclick="toggleCheck(this)">Introducción</li>
+              <li onclick="toggleCheck(this)">Objetivo</li>
+              <li onclick="toggleCheck(this)">
+                Selección de herramientas de versionamiento a utilizar
+              </li>
+            </ul>
+          </div>
+
+          <div class="deliverables">
+            <h4>🎯 Contenido Específico a Desarrollar</h4>
+            <ul class="checklist">
+              <li onclick="toggleCheck(this)">
+                Análisis de características del software a desarrollar
+              </li>
+              <li onclick="toggleCheck(this)">
+                Justificación técnica de herramientas seleccionadas
+              </li>
+              <li onclick="toggleCheck(this)">
+                Especificación de tecnologías de integración continua
+              </li>
+              <li onclick="toggleCheck(this)">
+                Plan de implementación de versionamiento
+              </li>
+              <li onclick="toggleCheck(this)">
+                Consideraciones de flujo de trabajo
+              </li>
+            </ul>
+          </div>
+
+          <div class="format-info">
+            <h4>📋 Formato de Entrega</h4>
+            <p><strong>Producto:</strong> Documento informe técnico</p>
+            <p><strong>Extensión:</strong> Libre</p>
+            <p><strong>Formato:</strong> PDF</p>
+            <p><strong>Entrega:</strong> GA7-220501096-AA1-EV01</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- EV02 -->
+      <div class="evidence" id="ev02">
+        <div class="evidence-header" onclick="toggleEvidence('ev02')">
+          <span class="evidence-code">EV02</span>
+          <span class="evidence-type">Desempeño</span>
+          <span class="evidence-title"
+            >Definir Estándares de Codificación de Acuerdo a Plataforma
+            Elegida</span
+          >
+          <span class="status-indicator status-pending">Pendiente</span>
+          <span class="expand-icon">▼</span>
+        </div>
+        <div class="evidence-content">
+          <div class="evidence-description">
+            <h4>📝 Descripción</h4>
+            <p>
+              Con base en las características del software a desarrollar realice
+              un informe técnico con el estándar de codificación a utilizar para
+              el desarrollo del software según lo visto en el componente
+              "Aplicación del paradigma orientado a objetos".
+            </p>
+          </div>
+
+          <div class="document-structure">
+            <h4>📄 Estructura Mínima del Documento</h4>
+            <ul class="checklist">
+              <li onclick="toggleCheck(this)">Portada</li>
+              <li onclick="toggleCheck(this)">Introducción</li>
+              <li onclick="toggleCheck(this)">Objetivo</li>
+              <li onclick="toggleCheck(this)">
+                Estándares de codificación (nombramiento de variables)
+              </li>
+              <li onclick="toggleCheck(this)">Declaración de clases</li>
+              <li onclick="toggleCheck(this)">Declaración de métodos</li>
+            </ul>
+          </div>
+
+          <div class="deliverables">
+            <h4>🎯 Contenido Específico a Desarrollar</h4>
+            <ul class="checklist">
+              <li onclick="toggleCheck(this)">
+                Selección y justificación de la plataforma de desarrollo
+              </li>
+              <li onclick="toggleCheck(this)">
+                Convenciones de nomenclatura para variables
+              </li>
+              <li onclick="toggleCheck(this)">
+                Estándares para declaración de clases
+              </li>
+              <li onclick="toggleCheck(this)">
+                Estándares para declaración de métodos
+              </li>
+              <li onclick="toggleCheck(this)">
+                Estándares de formato y documentación
+              </li>
+              <li onclick="toggleCheck(this)">
+                Aplicación del paradigma orientado a objetos
+              </li>
+            </ul>
+          </div>
+
+          <div class="format-info">
+            <h4>📋 Formato de Entrega</h4>
+            <p><strong>Producto:</strong> Documento informe técnico</p>
+            <p><strong>Extensión:</strong> Libre</p>
+            <p><strong>Formato:</strong> PDF</p>
+            <p><strong>Entrega:</strong> GA7-220501096-AA1-EV02</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- EV03 -->
+      <div class="evidence" id="ev03">
+        <div class="evidence-header" onclick="toggleEvidence('ev03')">
+          <span class="evidence-code">EV03</span>
+          <span class="evidence-type">Conocimiento</span>
+          <span class="evidence-title"
+            >Identifica Herramientas de Versionamiento</span
+          >
+          <span class="status-indicator status-pending">Pendiente</span>
+          <span class="expand-icon">▼</span>
+        </div>
+        <div class="evidence-content">
+          <div class="evidence-description">
+            <h4>📝 Descripción</h4>
+            <p>
+              Tomando como referencia el componente formativo "Integración
+              continua", realice una tabla con las diferencias entre el sistema
+              de control de versionamiento git local y git remoto.
+            </p>
+          </div>
+
+          <div class="document-structure">
+            <h4>📄 Estructura Mínima del Documento</h4>
+            <ul class="checklist">
+              <li onclick="toggleCheck(this)">Portada</li>
+              <li onclick="toggleCheck(this)">Introducción</li>
+              <li onclick="toggleCheck(this)">Objetivo</li>
+              <li onclick="toggleCheck(this)">
+                Tablas con diferencias y características
+              </li>
+              <li onclick="toggleCheck(this)">
+                Comandos de git local y git remoto
+              </li>
+            </ul>
+          </div>
+
+          <div class="deliverables">
+            <h4>🎯 Contenido Específico a Desarrollar</h4>
+            <ul class="checklist">
+              <li onclick="toggleCheck(this)">
+                Tabla comparativa Git Local vs Git Remoto
+              </li>
+              <li onclick="toggleCheck(this)">
+                Tabla con descripción de comandos básicos de git local
+              </li>
+              <li onclick="toggleCheck(this)">
+                Tabla con descripción de comandos básicos de git remoto
+              </li>
+              <li onclick="toggleCheck(this)">
+                Análisis de diferencias y características
+              </li>
+              <li onclick="toggleCheck(this)">
+                Casos de uso para cada modalidad
+              </li>
+            </ul>
+          </div>
+
+          <div class="table-preview">
+            <h4>📊 Ejemplo de Tabla Comparativa</h4>
+            <p>
+              <strong>Aspectos a comparar:</strong> Almacenamiento,
+              Colaboración, Backup, Acceso, Sincronización, Comandos específicos
+            </p>
+          </div>
+
+          <div class="format-info">
+            <h4>📋 Formato de Entrega</h4>
+            <p><strong>Producto:</strong> Documento informe técnico</p>
+            <p><strong>Extensión:</strong> Libre</p>
+            <p><strong>Formato:</strong> PDF</p>
+            <p><strong>Entrega:</strong> GA7-220501096-AA1-EV03</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- EV04 -->
+      <div class="evidence" id="ev04">
+        <div class="evidence-header" onclick="toggleEvidence('ev04')">
+          <span class="evidence-code">EV04</span>
+          <span class="evidence-type">Desempeño</span>
+          <span class="evidence-title"
+            >Instalación y Configuración de Herramienta de Versionamiento</span
+          >
+          <span class="status-indicator status-pending">Pendiente</span>
+          <span class="expand-icon">▼</span>
+        </div>
+        <div class="evidence-content">
+          <div class="evidence-description">
+            <h4>📝 Descripción</h4>
+            <p>
+              Tomando como referencia el componente formativo "Integración
+              continua", realice la instalación y configuración de las
+              herramientas de control de versionamiento tanto local como remoto.
+            </p>
+          </div>
+
+          <div class="document-structure">
+            <h4>📄 Estructura Mínima del Documento</h4>
+            <ul class="checklist">
+              <li onclick="toggleCheck(this)">Portada</li>
+              <li onclick="toggleCheck(this)">Introducción</li>
+              <li onclick="toggleCheck(this)">Objetivo</li>
+              <li onclick="toggleCheck(this)">
+                Paso a paso con pantallazos - instalación local
+              </li>
+              <li onclick="toggleCheck(this)">
+                Paso a paso con pantallazos - instalación remota
+              </li>
+            </ul>
+          </div>
+
+          <div class="deliverables">
+            <h4>🎯 Contenido Específico a Desarrollar</h4>
+            <ul class="checklist">
+              <li onclick="toggleCheck(this)">
+                Instalación de Git en sistema local (con capturas)
+              </li>
+              <li onclick="toggleCheck(this)">
+                Configuración inicial de Git (nombre, email)
+              </li>
+              <li onclick="toggleCheck(this)">
+                Creación de cuenta en plataforma remota (GitHub/GitLab)
+              </li>
+              <li onclick="toggleCheck(this)">
+                Configuración de SSH keys (con capturas)
+              </li>
+              <li onclick="toggleCheck(this)">
+                Verificación de instalación (con capturas)
+              </li>
+              <li onclick="toggleCheck(this)">
+                Documentación completa del proceso
+              </li>
+            </ul>
+          </div>
+
+          <div class="command-box">
+            <h4>💻 Comandos de Configuración Básica</h4>
+            <code>git config --global user.name "Tu Nombre"</code><br />
+            <code>git config --global user.email "tu@email.com"</code><br />
+            <code>ssh-keygen -t rsa -b 4096 -C "tu@email.com"</code><br />
+            <code>git --version</code>
+          </div>
+
+          <div class="format-info">
+            <h4>📋 Formato de Entrega</h4>
+            <p><strong>Producto:</strong> Documento instalación</p>
+            <p><strong>Extensión:</strong> Libre</p>
+            <p><strong>Formato:</strong> PDF</p>
+            <p><strong>Entrega:</strong> GA7-220501096-AA1-EV04</p>
+            <p>
+              <strong>Importante:</strong> Incluir capturas de pantalla de cada
+              paso
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- EV05 -->
+      <div class="evidence" id="ev05">
+        <div class="evidence-header" onclick="toggleEvidence('ev05')">
+          <span class="evidence-code">EV05</span>
+          <span class="evidence-type">Producto</span>
+          <span class="evidence-title"
+            >Herramientas de Versionamiento (GIT) Instalada y Configurada</span
+          >
+          <span class="status-indicator status-pending">Pendiente</span>
+          <span class="expand-icon">▼</span>
+        </div>
+        <div class="evidence-content">
+          <div class="evidence-description">
+            <h4>📝 Descripción</h4>
+            <p>
+              Tomando como referencia el componente formativo "Integración
+              continua", conectar el equipo local con el repositorio remoto por
+              medio de Git usando los comandos vistos anteriormente.
+            </p>
+          </div>
+
+          <div class="exercise-steps">
+            <h4>📋 Ejercicio Práctico - Paso 1</h4>
+            <ul class="checklist">
+              <li onclick="toggleCheck(this)">
+                Crear un nuevo repositorio público en GitHub/GitLab con el
+                nombre "Programa-git"
+              </li>
+              <li onclick="toggleCheck(this)">
+                Añadirlo al repositorio local del Programa
+              </li>
+              <li onclick="toggleCheck(this)">
+                Mostrar todos los repositorios remotos configurados
+              </li>
+            </ul>
+            <div class="command-box">
+              <code
+                ># Crear el repositorio en GitHub y copiar su url con el
+                protocolo https</code
+              ><br />
+              <code>git remote add github url</code><br />
+              <code>git remote -v</code>
+            </div>
+          </div>
+
+          <div class="exercise-steps">
+            <h4>📋 Ejercicio Práctico - Paso 2</h4>
+            <ul class="checklist">
+              <li onclick="toggleCheck(this)">
+                Agregar los cambios del repositorio local al repositorio remoto
+              </li>
+              <li onclick="toggleCheck(this)">
+                Acceder a GitHub/GitLab y comprobar que se han subido los
+                cambios
+              </li>
+              <li onclick="toggleCheck(this)">
+                Mostrar el historial de versiones
+              </li>
+            </ul>
+            <div class="command-box">
+              <code>git push github master</code>
+            </div>
+          </div>
+
+          <div class="exercise-steps">
+            <h4>📋 Ejercicio Práctico - Paso 3</h4>
+            <ul class="checklist">
+              <li onclick="toggleCheck(this)">
+                Agregar el archivo kotlin.txt que contenga el nombre del usuario
+                y su correo electrónico
+              </li>
+              <li onclick="toggleCheck(this)">Agregar los cambios</li>
+              <li onclick="toggleCheck(this)">
+                Realizar un commit con el mensaje "Añadido datos."
+              </li>
+              <li onclick="toggleCheck(this)">
+                Cargar cambios al repositorio remoto
+              </li>
+            </ul>
+            <div class="command-box">
+              <code>cat > kotlin.txt</code><br />
+              <code>git add .</code><br />
+              <code>git commit -m "Añadido datos."</code><br />
+              <code>git push origin master</code>
+            </div>
+          </div>
+
+          <div class="deliverables">
+            <h4>🎯 Requerimientos del Video</h4>
+            <ul class="checklist">
+              <li onclick="toggleCheck(this)">
+                Realizar el ejercicio en las herramientas de versionamiento
+                instaladas
+              </li>
+              <li onclick="toggleCheck(this)">
+                Grabar un video ejecutando cada uno de los puntos solicitados
+              </li>
+              <li onclick="toggleCheck(this)">
+                Explicar cada uno de los requerimientos durante la grabación
+              </li>
+              <li onclick="toggleCheck(this)">
+                Incluir presentación con nombre y ejercicios a realizar
+              </li>
+              <li onclick="toggleCheck(this)">
+                Demostrar la ejecución de todos los comandos
+              </li>
+            </ul>
+          </div>
+
+          <div class="format-info">
+            <h4>📋 Formato de Entrega</h4>
+            <p><strong>Producto:</strong> Video</p>
+            <p><strong>Formato:</strong> MP4</p>
+            <p><strong>Entrega:</strong> GA7-220501096-AA1-EV05</p>
+            <p>
+              <strong>Contenido:</strong> Demostración práctica completa con
+              explicaciones
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>🚀 ¡Éxito en tu proyecto de desarrollo de software!</p>
+        <p>
+          Recuerda seguir cada paso y documentar adecuadamente todo el proceso.
+        </p>
+      </div>
+    </div>
+
+    <script>
+      function toggleEvidence(evidenceId) {
+        const evidence = document.getElementById(evidenceId);
+        const allEvidences = document.querySelectorAll(".evidence");
+
+        // Cerrar otras evidencias
+        allEvidences.forEach((e) => {
+          if (e.id !== evidenceId) {
+            e.classList.remove("active");
+          }
+        });
+
+        // Toggle la evidencia actual
+        evidence.classList.toggle("active");
+      }
+
+      function toggleCheck(item) {
+        item.classList.toggle("completed");
+        updateProgress();
+        updateEvidenceStatus();
+      }
+
+      function updateProgress() {
+        const totalItems = document.querySelectorAll(".checklist li").length;
+        const completedItems = document.querySelectorAll(
+          ".checklist li.completed"
+        ).length;
+        const percentage = Math.round((completedItems / totalItems) * 100);
+
+        document.getElementById("progressFill").style.width = percentage + "%";
+        document.getElementById(
+          "progressText"
+        ).textContent = `Progreso: ${percentage}% completado (${completedItems}/${totalItems} tareas)`;
+      }
+
+      function updateEvidenceStatus() {
+        const evidences = document.querySelectorAll(".evidence");
+
+        evidences.forEach((evidence) => {
+          const totalItems = evidence.querySelectorAll(".checklist li").length;
+          const completedItems = evidence.querySelectorAll(
+            ".checklist li.completed"
+          ).length;
+          const statusElement = evidence.querySelector(".status-indicator");
+
+          if (completedItems === 0) {
+            statusElement.textContent = "Pendiente";
+            statusElement.className = "status-indicator status-pending";
+          } else if (completedItems === totalItems) {
+            statusElement.textContent = "Completado";
+            statusElement.className = "status-indicator status-completed";
+          } else {
+            statusElement.textContent = "En Progreso";
+            statusElement.className = "status-indicator status-progress";
+          }
+        });
+      }
+
+      // Inicializar la primera evidencia como activa
+      document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("ev01").classList.add("active");
+      });
+    </script>
+  </body>
+</html>
