@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial: CRUD PHP con MVC - Paso a Paso</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 40px 0;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 8px;
+            border-radius: 4px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4aa, #00a8ff);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+        
+        .step-container {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .step-container.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-right: 20px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .step-title {
+            font-size: 2em;
+            color: #333;
+            margin: 0;
+        }
+        
+        .step-content {
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+        
+        .code-block {
+            background: #1e1e1e;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            position: relative;
+        }
+        
+        .code-header {
+            background: #333;
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 8px 8px 0 0;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin: 20px 0 0 0;
+        }
+        
+        .code-block + .code-block {
+            margin-top: 0;
+            border-radius: 0 0 8px 8px;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .warning {
+            background: linear-gradient(120deg, #ffeaa7 0%, #fab1a0 100%);
+            padding: 15px;
+            border-left: 4px solid #e17055;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .success {
+            background: linear-gradient(120deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .file-structure {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            gap: 20px;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(168, 237, 234, 0.4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        .step-counter {
+            text-align: center;
+            color: white;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+        
+        .checklist {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .checklist h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .checklist ul {
+            list-style: none;
+        }
+        
+        .checklist li {
+            padding: 8px 0;
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .checklist li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #00b894;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .download-section {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .download-btn {
+            background: white;
+            color: #00b894;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px 8px 0 0;
+            margin-right: 5px;
+        }
+        
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Tutorial CRUD PHP con MVC</h1>
+            <p>Aprende a crear un sistema completo paso a paso</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <div class="step-counter">
+                Paso <span id="currentStep">1</span> de <span id="totalSteps">12</span>
+            </div>
+        </div>
+
+        <!-- Paso 1: Introducción -->
+        <div class="step-container active" data-step="1">
+            <div class="step-header">
+                <div class="step-number">1</div>
+                <h2 class="step-title">🎯 Introducción al Proyecto</h2>
+            </div>
+            <div class="step-content">
+                <p>Bienvenido al tutorial completo para crear un sistema CRUD (Create, Read, Update, Delete) usando PHP puro y el patrón arquitectónico MVC.</p>
+                
+                <div class="highlight">
+                    <h3>🎓 ¿Qué aprenderás?</h3>
+                    <ul>
+                        <li>Fundamentos de PHP para desarrollo web</li>
+                        <li>Implementación del patrón MVC</li>
+                        <li>Conexión segura a bases de datos con PDO</li>
+                        <li>Operaciones CRUD completas</li>
+                        <li>Buenas prácticas de programación</li>
+                    </ul>
+                </div>
+                
+                <div class="success">
+                    <h3>🏆 Proyecto Final</h3>
+                    <p>Al finalizar tendrás un sistema completo de gestión de usuarios con interfaz web, validaciones y arquitectura profesional.</p>
+                </div>
+                
+                <div class="checklist">
+                    <h4>📋 Requisitos Previos</h4>
+                    <ul>
+                        <li>Conocimientos básicos de HTML y CSS</li>
+                        <li>Conceptos básicos de programación</li>
+                        <li>Familiaridad con bases de datos (opcional)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 2: ¿Qué es PHP? -->
+        <div class="step-container" data-step="2">
+            <div class="step-header">
+                <div class="step-number">2</div>
+                <h2 class="step-title">🐘 ¿Qué es PHP?</h2>
+            </div>
+            <div class="step-content">
+                <p>PHP (PHP: Hypertext Preprocessor) es un lenguaje de programación de código abierto especialmente diseñado para desarrollo web.</p>
+                
+                <div class="highlight">
+                    <h3>🌟 Características Principales</h3>
+                    <ul>
+                        <li><strong>Lenguaje de servidor:</strong> Se ejecuta en el servidor antes de enviar contenido al navegador</li>
+                        <li><strong>Multiplataforma:</strong> Funciona en Windows, Linux, macOS</li>
+                        <li><strong>Sintaxis sencilla:</strong> Similar a C y Perl, fácil de aprender</li>
+                        <li><strong>Gran comunidad:</strong> Amplio soporte y documentación</li>
+                        <li><strong>Conexión con BD:</strong> Excelente integración con MySQL, PostgreSQL, etc.</li>
+                    </ul>
+                </div>
+                
+                <div class="code-header">Ejemplo básico de PHP</div>
+                <div class="code-block">&lt;?php
+echo "¡Hola Mundo desde PHP!";
+$nombre = "Juan";
+echo "Bienvenido, " . $nombre;
+?&gt;</div>
+                
+                <div class="warning">
+                    <strong>💡 Dato Curioso:</strong> PHP potencia más del 75% de los sitios web que conocen su lenguaje de servidor, incluyendo Facebook, Wikipedia y WordPress.
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 3: Instalación de PHP -->
+        <div class="step-container" data-step="3">
+            <div class="step-header">
+                <div class="step-number">3</div>
+                <h2 class="step-title">⚙️ Instalación de PHP</h2>
+            </div>
+            <div class="step-content">
+                <p>Aprende a instalar PHP en diferentes sistemas operativos.</p>
+                
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('windows')">Windows</button>
+                    <button class="tab" onclick="showTab('linux')">Linux</button>
+                    <button class="tab" onclick="showTab('macos')">macOS</button>
+                </div>
+                
+                <div id="windows" class="tab-content active">
+                    <h3>🪟 Instalación en Windows</h3>
+                    <ol>
+                        <li>Descargar PHP desde <a href="https://www.php.net/downloads.php" target="_blank">php.net</a></li>
+                        <li>Extraer en <code>C:\php</code></li>
+                        <li>Agregar <code>C:\php</code> a las variables de entorno PATH</li>
+                        <li>Copiar <code>php.ini-development</code> como <code>php.ini</code></li>
+                    </ol>
+                    
+                    <div class="code-header">Verificar instalación</div>
+                    <div class="code-block">php -v</div>
+                </div>
+                
+                <div id="linux" class="tab-content">
+                    <h3>🐧 Instalación en Linux (Ubuntu/Debian)</h3>
+                    <div class="code-header">Comandos de instalación</div>
+                    <div class="code-block"># Actualizar repositorios
+sudo apt update
+
+# Instalar PHP y extensiones básicas
+sudo apt install php php-mysql php-mbstring php-xml php-curl
+
+# Verificar instalación
+php -v</div>
+                </div>
+                
+                <div id="macos" class="tab-content">
+                    <h3>🍎 Instalación en macOS</h3>
+                    <div class="code-header">Usando Homebrew</div>
+                    <div class="code-block"># Instalar Homebrew (si no lo tienes)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Instalar PHP
+brew install php
+
+# Verificar instalación
+php -v</div>
+                </div>
+                
+                <div class="success">
+                    <h3>✅ Verificación Exitosa</h3>
+                    <p>Si ves información de la versión de PHP, ¡la instalación fue exitosa!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 4: Instalación de XAMPP -->
+        <div class="step-container" data-step="4">
+            <div class="step-header">
+                <div class="step-number">4</div>
+                <h2 class="step-title">🔥 Instalación de XAMPP</h2>
+            </div>
+            <div class="step-content">
+                <p>XAMPP es un paquete de software libre que incluye Apache, MySQL, PHP y Perl, facilitando la creación de un entorno de desarrollo local.</p>
+                
+                <div class="highlight">
+                    <h3>📦 ¿Qué incluye XAMPP?</h3>
+                    <ul>
+                        <li><strong>Apache:</strong> Servidor web</li>
+                        <li><strong>MySQL/MariaDB:</strong> Sistema de gestión de bases de datos</li>
+                        <li><strong>PHP:</strong> Lenguaje de programación</li>
+                        <li><strong>phpMyAdmin:</strong> Interfaz web para gestionar MySQL</li>
+                    </ul>
+                </div>
+                
+                <div class="checklist">
+                    <h4>🚀 Proceso de Instalación</h4>
+                    <ul>
+                        <li>Descargar XAMPP desde <a href="https://www.apachefriends.org/" target="_blank">apachefriends.org</a></li>
+                        <li>Ejecutar el instalador como administrador</li>
+                        <li>Seleccionar componentes (Apache, MySQL, PHP, phpMyAdmin)</li>
+                        <li>Elegir directorio de instalación (recomendado: <code>C:\xampp</code>)</li>
+                        <li>Finalizar instalación</li>
+                    </ul>
+                </div>
+                
+                <div class="warning">
+                    <h3>⚡ Configuración Inicial</h3>
+                    <ol>
+                        <li>Abrir XAMPP Control Panel</li>
+                        <li>Iniciar Apache y MySQL</li>
+                        <li>Verificar en navegador: <code>http://localhost</code></li>
+                        <li>Acceder a phpMyAdmin: <code>http://localhost/phpmyadmin</code></li>
+                    </ol>
+                </div>
+                
+                <div class="success">
+                    <p><strong>🎉 ¡Perfecto!</strong> Si ves la página de bienvenida de XAMPP, tu entorno está listo.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 5: ¿Qué es MVC? -->
+        <div class="step-container" data-step="5">
+            <div class="step-header">
+                <div class="step-number">5</div>
+                <h2 class="step-title">🏗️ ¿Qué es el Patrón MVC?</h2>
+            </div>
+            <div class="step-content">
+                <p>MVC (Modelo-Vista-Controlador) es un patrón de arquitectura de software que separa una aplicación en tres componentes interconectados.</p>
+                
+                <div class="highlight">
+                    <h3>🧩 Componentes del MVC</h3>
+                    
+                    <h4>📊 Modelo (Model)</h4>
+                    <ul>
+                        <li>Gestiona los datos y la lógica de negocio</li>
+                        <li>Interactúa con la base de datos</li>
+                        <li>Valida datos y procesa información</li>
+                    </ul>
+                    
+                    <h4>👁️ Vista (View)</h4>
+                    <ul>
+                        <li>Presenta la información al usuario</li>
+                        <li>Genera la interfaz de usuario</li>
+                        <li>Muestra datos del modelo</li>
+                    </ul>
+                    
+                    <h4>🎮 Controlador (Controller)</h4>
+                    <ul>
+                        <li>Coordina entre Modelo y Vista</li>
+                        <li>Procesa solicitudes del usuario</li>
+                        <li>Gestiona el flujo de la aplicación</li>
+                    </ul>
+                </div>
+                
+                <div class="code-header">Flujo de trabajo MVC</div>
+                <div class="code-block">1. Usuario hace una solicitud
+   ↓
+2. Controlador recibe la solicitud
+   ↓
+3. Controlador interactúa con el Modelo
+   ↓
+4. Modelo procesa datos y devuelve resultado
+   ↓
+5. Controlador selecciona la Vista apropiada
+   ↓
+6. Vista presenta la información al usuario</div>
+                
+                <div class="success">
+                    <h3>🌟 Ventajas del MVC</h3>
+                    <ul>
+                        <li><strong>Separación de responsabilidades:</strong> Cada componente tiene una función específica</li>
+                        <li><strong>Mantenibilidad:</strong> Cambios en un componente no afectan otros</li>
+                        <li><strong>Reutilización:</strong> Los modelos pueden usarse en diferentes vistas</li>
+                        <li><strong>Trabajo en equipo:</strong> Diferentes desarrolladores pueden trabajar en paralelo</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 6: MVC en PHP -->
+        <div class="step-container" data-step="6">
+            <div class="step-header">
+                <div class="step-number">6</div>
+                <h2 class="step-title">🐘 MVC en PHP</h2>
+            </div>
+            <div class="step-content">
+                <p>Aprende cómo implementar el patrón MVC específicamente en PHP para crear aplicaciones web estructuradas.</p>
+                
+                <div class="file-structure">
+                    <h3>📁 Estructura de Directorios MVC</h3>
+                    <pre>/mi_proyecto_php_crud
+├── config/
+│   └── db.php               # Conexión a base de datos
+├── models/
+│   └── Usuario.php          # Modelo (lógica de datos)
+├── controllers/
+│   └── UsuarioController.php # Controlador (lógica de aplicación)
+├── views/
+│   └── usuarios.php         # Vista (presentación)
+├── index.php               # Punto de entrada
+├── README.md
+└── .gitignore</pre>
+                </div>
+                
+                <div class="highlight">
+                    <h3>🔧 Características MVC en PHP</h3>
+                    
+                    <div class="tabs">
+                        <button class="tab active" onclick="showMvcTab('modelo')">Modelo</button>
+                        <button class="tab" onclick="showMvcTab('vista')">Vista</button>
+                        <button class="tab" onclick="showMvcTab('controlador')">Controlador</button>
+                    </div>
+                    
+                    <div id="modelo" class="tab-content active">
+                        <h4>📊 Modelo en PHP</h4>
+                        <ul>
+                            <li>Clases que representan entidades</li>
+                            <li>Métodos para operaciones CRUD</li>
+                            <li>Interacción con base de datos usando PDO</li>
+                            <li>Validación de datos</li>
+                        </ul>
+                        
+                        <div class="code-header">Ejemplo de Modelo</div>
+                        <div class="code-block">class Usuario {
+    public static function obtenerTodos($conn) {
+        $stmt = $conn->query("SELECT * FROM usuarios");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    public static function insertar($conn, $nombre, $email) {
+        $stmt = $conn->prepare("INSERT INTO usuarios (nombre, email) VALUES (?, ?)");
+        return $stmt->execute([$nombre, $email]);
+    }
+}</div>
+                    </div>
+                    
+                    <div id="vista" class="tab-content">
+                        <h4>👁️ Vista en PHP</h4>
+                        <ul>
+                            <li>Archivos PHP que mezclan HTML y PHP</li>
+                            <li>Presentación de datos usando variables PHP</li>
+                            <li>Formularios para captura de datos</li>
+                            <li>Separación de lógica de presentación</li>
+                        </ul>
+                        
+                        <div class="code-header">Ejemplo de Vista</div>
+                        <div class="code-block">&lt;?php foreach ($usuarios as $usuario): ?&gt;
+    &lt;tr&gt;
+        &lt;td&gt;&lt;?= htmlspecialchars($usuario['nombre']) ?&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;?= htmlspecialchars($usuario['email']) ?&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;?php endforeach; ?&gt;</div>
+                    </div>
+                    
+                    <div id="controlador" class="tab-content">
+                        <h4>🎮 Controlador en PHP</h4>
+                        <ul>
+                            <li>Procesa parámetros GET y POST</li>
+                            <li>Invoca métodos del modelo</li>
+                            <li>Redirige a vistas apropiadas</li>
+                            <li>Gestiona sesiones y autenticación</li>
+                        </ul>
+                        
+                        <div class="code-header">Ejemplo de Controlador</div>
+                        <div class="code-block">$accion = $_GET['accion'] ?? '';
+
+switch ($accion) {
+    case 'insertar':
+        Usuario::insertar($conn, $_POST['nombre'], $_POST['email']);
+        break;
+    case 'eliminar':
+        Usuario::eliminar($conn, $_GET['id']);
+        break;
+}
+
+header("Location: ../views/usuarios.php");</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 7: Crear la Base de Datos -->
+        <div class="step-container" data-step="7">
+            <div class="step-header">
+                <div class="step-number">7</div>
+                <h2 class="step-title">🗄️ Crear la Base de Datos</h2>
+            </div>
+            <div class="step-content">
+                <p>Vamos a crear la base de datos MySQL que utilizará nuestro sistema CRUD.</p>
+                
+                <div class="checklist">
+                    <h4>📋 Pasos a Seguir</h4>
+                    <ul>
+                        <li>Abrir phpMyAdmin en el navegador</li>
+                        <li>Acceder a <code>http://localhost/phpmyadmin</code></li>
+                        <li>Crear nueva base de datos</li>
+                        <li>Ejecutar script SQL</li>
+                    </ul>
+                </div>
+                
+                <div class="code-header">Script SQL - Crear Base de Datos</div>
+                <div class="code-block">-- Crear base de datos
+CREATE DATABASE mi_base_de_datos;
+USE mi_base_de_datos;
+
+-- Crear tabla usuarios
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Insertar datos de prueba
+INSERT INTO usuarios (nombre, email) VALUES
+('Juan Pérez', 'juan@email.com'),
+('María González', 'maria@email.com'),
+('Carlos López', 'carlos@email.com');</div>
+                
+                <div class="warning">
+                    <h3>⚠️ Importante</h3>
+                    <p>Asegúrate de que MySQL esté ejecutándose en XAMPP antes de crear la base de datos.</p>
+                </div>
+                
+                <div class="success">
+                    <h3>✅ Verificación</h3>
+                    <p>Si puedes ver la tabla <code>usuarios</code> con los datos de prueba en phpMyAdmin, ¡todo está correcto!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 8: Configurar Conexión BD -->
+        <div class="step-container" data-step="8">
+            <div class="step-header">
+                <div class="step-number">8</div>
+                <h2 class="step-title">🔌 Configurar Conexión a la Base de Datos</h2>
+            </div>
+            <div class="step-content">
+                <p>Crear el archivo de configuración para conectar PHP con MySQL usando PDO (PHP Data Objects).</p>
+                
+                <div class="highlight">
+                    <h3>🌟 ¿Por qué PDO?</h3>
+                    <ul>
+                        <li><strong>Seguridad:</strong> Protección contra inyección SQL</li>
+                        <li><strong>Flexibilidad:</strong> Compatible con múltiples bases de datos</li>
+                        <li><strong>Prepared Statements:</strong> Consultas más seguras y eficientes</li>
+                        <li><strong>Manejo de errores:</strong> Mejor control de excepciones</li>
+                    </ul>
+                </div>
+                
+                <div class="code-header">config/db.php</div>
+                <div class="code-block">&lt;?php
+$host = "localhost";
+$dbname = "mi_base_de_datos";
+$username = "root";
+$password = "";
+
+try {
+    $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch(PDOException $e) {
+    die("Conexión fallida: " . $e->getMessage());
+}
+?&gt;</div>
+                
+                <div class="warning">
+                    <h3>🔐 Configuración de Parámetros</h3>
+                    <ul>
+                        <li><strong>host:</strong> "localhost" (servidor local)</li>
+                        <li><strong>dbname:</strong> "mi_base_de_datos" (nombre de tu BD)</li>
+                        <li><strong>username:</strong> "root" (usuario por defecto de XAMPP)</li>
+                        <li><strong>password:</strong> "" (vacío por defecto en XAMPP)</li>
+                    </ul>
+                </div>
+                
+                <div class="success">
+                    <h3>✅ Archivo creado</h3>
+                    <p>Guarda este archivo como <code>config/db.php</code> en tu proyecto.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 9: Crear el Modelo -->
+        <div class="step-container" data-step="9">
+            <div class="step-header">
+                <div class="step-number">9</div>
+                <h2 class="step-title">📊 Crear el Modelo Usuario</h2>
+            </div>
+            <div class="step-content">
+                <p>El modelo es la capa que maneja toda la lógica de datos y operaciones con la base de datos.</p>
+                
+                <div class="code-header">models/Usuario.php</div>
+                <div class="code-block">&lt;?php
+require_once __DIR__ . '/../config/db.php';
+
+class Usuario {
+    
+    /**
+     * Obtiene todos los usuarios de la base de datos
+     */
+    public static function obtenerTodos($conn) {
+        $stmt = $conn->query("SELECT * FROM usuarios ORDER BY id DESC");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    /**
+     * Obtiene un usuario por ID
+     */
+    public static function obtenerPorId($conn, $id) {
+        $stmt = $conn->prepare("SELECT * FROM usuarios WHERE id = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
+    /**
+     * Inserta un nuevo usuario
+     */
+    public static function insertar($conn, $nombre, $email) {
+        $stmt = $conn->prepare("INSERT INTO usuarios (nombre, email) VALUES (?, ?)");
+        return $stmt->execute([$nombre, $email]);
+    }
+    
+    /**
+     * Actualiza un usuario existente
+     */
+    public static function actualizar($conn, $id, $nombre, $email) {
+        $stmt = $conn->prepare("UPDATE usuarios SET nombre = ?, email = ? WHERE id = ?");
+        return $stmt->execute([$nombre, $email, $id]);
+    }
+    
+    /**
+     * Elimina un usuario
+     */
+    public static function eliminar($conn, $id) {
+        $stmt = $conn->prepare("DELETE FROM usuarios WHERE id = ?");
+        return $stmt->execute([$id]);
+    }
+    
+    /**
+     * Valida los datos del usuario
+     */
+    public static function validar($nombre, $email) {
+        $errores = [];
+        
+        if (empty($nombre)) {
+            $errores[] = "El nombre es obligatorio";
+        } elseif (strlen($nombre) < 2) {
+            $errores[] = "El nombre debe tener al menos 2 caracteres";
+        }
+        
+        if (empty($email)) {
+            $errores[] = "El email es obligatorio";
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errores[] = "El email no tiene un formato válido";
+        }
+        
+        return $errores;
+    }
+}
+?&gt;</div>
+                
+                <div class="highlight">
+                    <h3>🔧 Funcionalidades del Modelo</h3>
+                    <ul>
+                        <li><strong>obtenerTodos():</strong> Lista todos los usuarios</li>
+                        <li><strong>obtenerPorId():</strong> Busca un usuario específico</li>
+                        <li><strong>insertar():</strong> Crea un nuevo usuario</li>
+                        <li><strong>actualizar():</strong> Modifica datos existentes</li>
+                        <li><strong>eliminar():</strong> Borra un usuario</li>
+                        <li><strong>validar():</strong> Verifica la integridad de los datos</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 10: Crear el Controlador -->
+        <div class="step-container" data-step="10">
+            <div class="step-header">
+                <div class="step-number">10</div>
+                <h2 class="step-title">🎮 Crear el Controlador</h2>
+            </div>
+            <div class="step-content">
+                <p>El controlador procesa las solicitudes del usuario y coordina entre el modelo y la vista.</p>
+                
+                <div class="code-header">controllers/UsuarioController.php</div>
+                <div class="code-block">&lt;?php
+require_once '../models/Usuario.php';
+require_once '../config/db.php';
+
+class UsuarioController {
+    
+    private $conn;
+    
+    public function __construct($conexion) {
+        $this->conn = $conexion;
+    }
+    
+    /**
+     * Procesa las acciones del controlador
+     */
+    public function procesarAccion() {
+        $accion = $_GET['accion'] ?? '';
+        
+        switch ($accion) {
+            case 'insertar':
+                $this->insertar();
+                break;
+            case 'actualizar':
+                $this->actualizar();
+                break;
+            case 'eliminar':
+                $this->eliminar();
+                break;
+            case 'obtener':
+                $this->obtenerUsuario();
+                break;
+            default:
+                $this->redirigir();
+                break;
+        }
+    }
+    
+    /**
+     * Inserta un nuevo usuario
+     */
+    private function insertar() {
+        if ($_POST) {
+            $nombre = trim($_POST['nombre'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            
+            // Validar datos
+            $errores = Usuario::validar($nombre, $email);
+            
+            if (empty($errores)) {
+                if (Usuario::insertar($this->conn, $nombre, $email)) {
+                    $this->redirigir('success=1');
+                } else {
+                    $this->redirigir('error=1');
+                }
+            } else {
+                $this->redirigir('error=2&msg=' . urlencode(implode(', ', $errores)));
+            }
+        }
+    }
+    
+    /**
+     * Actualiza un usuario existente
+     */
+    private function actualizar() {
+        if ($_POST) {
+            $id = $_POST['id'] ?? 0;
+            $nombre = trim($_POST['nombre'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            
+            $errores = Usuario::validar($nombre, $email);
+            
+            if (empty($errores)) {
+                if (Usuario::actualizar($this->conn, $id, $nombre, $email)) {
+                    $this->redirigir('success=2');
+                } else {
+                    $this->redirigir('error=3');
+                }
+            } else {
+                $this->redirigir('error=4&msg=' . urlencode(implode(', ', $errores)));
+            }
+        }
+    }
+    
+    /**
+     * Elimina un usuario
+     */
+    private function eliminar() {
+        $id = $_GET['id'] ?? 0;
+        
+        if ($id > 0) {
+            if (Usuario::eliminar($this->conn, $id)) {
+                $this->redirigir('success=3');
+            } else {
+                $this->redirigir('error=5');
+            }
+        }
+    }
+    
+    /**
+     * Obtiene un usuario para edición
+     */
+    private function obtenerUsuario() {
+        $id = $_GET['id'] ?? 0;
+        $usuario = Usuario::obtenerPorId($this->conn, $id);
+        
+        if ($usuario) {
+            header('Content-Type: application/json');
+            echo json_encode($usuario);
+            exit;
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Usuario no encontrado']);
+            exit;
+        }
+    }
+    
+    /**
+     * Redirige a la vista principal
+     */
+    private function redirigir($parametros = '') {
+        $url = '../views/usuarios.php';
+        if ($parametros) {
+            $url .= '?' . $parametros;
+        }
+        header("Location: $url");
+        exit;
+    }
+}
+
+// Instanciar y procesar
+$controller = new UsuarioController($conn);
+$controller->procesarAccion();
+?&gt;</div>
+                
+                <div class="highlight">
+                    <h3>🔄 Funciones del Controlador</h3>
+                    <ul>
+                        <li><strong>procesarAccion():</strong> Determina qué acción ejecutar</li>
+                        <li><strong>insertar():</strong> Procesa la creación de usuarios</li>
+                        <li><strong>actualizar():</strong> Gestiona la edición</li>
+                        <li><strong>eliminar():</strong> Maneja la eliminación</li>
+                        <li><strong>redirigir():</strong> Controla la navegación</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 11: Crear la Vista -->
+        <div class="step-container" data-step="11">
+            <div class="step-header">
+                <div class="step-number">11</div>
+                <h2 class="step-title">👁️ Crear la Vista</h2>
+            </div>
+            <div class="step-content">
+                <p>La vista es la interfaz de usuario que presenta los datos y permite la interacción.</p>
+                
+                <div class="code-header">views/usuarios.php - Parte 1: PHP y HTML básico</div>
+                <div class="code-block">&lt;?php
+require_once '../models/Usuario.php';
+require_once '../config/db.php';
+
+// Obtener todos los usuarios
+$usuarios = Usuario::obtenerTodos($conn);
+
+// Procesar mensajes de estado
+$mensaje = '';
+$tipoMensaje = '';
+
+if (isset($_GET['success'])) {
+    $tipoMensaje = 'success';
+    switch ($_GET['success']) {
+        case '1': $mensaje = 'Usuario agregado exitosamente'; break;
+        case '2': $mensaje = 'Usuario actualizado exitosamente'; break;
+        case '3': $mensaje = 'Usuario eliminado exitosamente'; break;
+    }
+}
+
+if (isset($_GET['error'])) {
+    $tipoMensaje = 'error';
+    $mensaje = $_GET['msg'] ?? 'Error en la operación';
+}
+?&gt;
+
+&lt;!DOCTYPE html&gt;
+&lt;html lang="es"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Gestión de Usuarios - CRUD PHP MVC&lt;/title&gt;
+    &lt;!-- CSS styles aquí --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="container"&gt;
+        &lt;h1&gt;🔧 Gestión de Usuarios - CRUD PHP MVC&lt;/h1&gt;
+        
+        &lt;?php if ($mensaje): ?&gt;
+            &lt;div class="mensaje &lt;?= $tipoMensaje ?&gt;"&gt;
+                &lt;?= htmlspecialchars($mensaje) ?&gt;
+            &lt;/div&gt;
+        &lt;?php endif; ?&gt;</div>
+                
+                <div class="warning">
+                    <h3>📝 Nota sobre el código</h3>
+                    <p>La vista completa es extensa. En el tutorial completo incluye:</p>
+                    <ul>
+                        <li>Formulario para agregar usuarios</li>
+                        <li>Formulario de edición dinámico</li>
+                        <li>Tabla con lista de usuarios</li>
+                        <li>Estilos CSS modernos</li>
+                        <li>JavaScript para interactividad</li>
+                    </ul>
+                </div>
+                
+                <div class="highlight">
+                    <h3>🎨 Características de la Vista</h3>
+                    <ul>
+                        <li><strong>Responsive:</strong> Se adapta a diferentes pantallas</li>
+                        <li><strong>Interactiva:</strong> Edición sin recargar página</li>
+                        <li><strong>Validación:</strong> Verificación en tiempo real</li>
+                        <li><strong>Mensajes:</strong> Feedback inmediato al usuario</li>
+                        <li><strong>Moderna:</strong> Diseño atractivo y funcional</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 12: Pruebas y Despliegue -->
+        <div class="step-container" data-step="12">
+            <div class="step-header">
+                <div class="step-number">12</div>
+                <h2 class="step-title">🚀 Pruebas y Despliegue</h2>
+            </div>
+            <div class="step-content">
+                <p>¡Felicidades! Has completado el desarrollo. Ahora vamos a probar y preparar el proyecto.</p>
+                
+                <div class="checklist">
+                    <h4>✅ Lista de Verificación Final</h4>
+                    <ul>
+                        <li>XAMPP ejecutándose (Apache y MySQL activos)</li>
+                        <li>Base de datos creada con datos de prueba</li>
+                        <li>Archivos del proyecto en htdocs/mi_proyecto_php_crud</li>
+                        <li>Configuración de conexión correcta</li>
+                        <li>Permisos de archivos apropiados</li>
+                    </ul>
+                </div>
+                
+                <div class="highlight">
+                    <h3>🧪 Pruebas a Realizar</h3>
+                    <ol>
+                        <li><strong>Crear Usuario:</strong> Agregar un nuevo usuario con el formulario</li>
+                        <li><strong>Listar Usuarios:</strong> Verificar que se muestren todos los usuarios</li>
+                        <li><strong>Editar Usuario:</strong> Modificar datos de un usuario existente</li>
+                        <li><strong>Eliminar Usuario:</strong> Borrar un usuario y confirmar eliminación</li>
+                        <li><strong>Validaciones:</strong> Probar campos vacíos y emails inválidos</li>
+                    </ol>
+                </div>
+                
+                <div class="code-header">Acceder al proyecto</div>
+                <div class="code-block">http://localhost/mi_proyecto_php_crud</div>
+                
+                <div class="success">
+                    <h3>🎉 ¡Proyecto Completado!</h3>
+                    <p>Has creado exitosamente un sistema CRUD completo usando PHP y el patrón MVC. ¡Excelente trabajo!</p>
+                </div>
+                
+                <div class="download-section">
+                    <h3>📚 Recursos Adicionales</h3>
+                    <p>Descarga el código completo y la documentación</p>
+                    <button class="download-btn" onclick="downloadFiles()">📥 Descargar Código Completo</button>
+                    <button class="download-btn" onclick="downloadDB()">🗄️ Descargar Script SQL</button>
+                </div>
+                
+                <div class="warning">
+                    <h3>📈 Próximos Pasos</h3>
+                    <ul>
+                        <li>Agregar autenticación de usuarios</li>
+                        <li>Implementar paginación para grandes datasets</li>
+                        <li>Añadir búsqueda y filtros avanzados</li>
+                        <li>Integrar un framework CSS como Bootstrap</li>
+                        <li>Crear APIs REST para consumo externo</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navegación -->
+        <div class="nav-buttons">
+            <button id="prevBtn" class="btn btn-secondary" onclick="previousStep()" disabled>
+                ← Anterior
+            </button>
+            <button id="nextBtn" class="btn btn-primary" onclick="nextStep()">
+                Siguiente →
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 12;
+        
+        function updateUI() {
+            // Actualizar contador
+            document.getElementById('currentStep').textContent = currentStep;
+            document.getElementById('totalSteps').textContent = totalSteps;
+            
+            // Actualizar barra de progreso
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            // Mostrar/ocultar pasos
+            document.querySelectorAll('.step-container').forEach((step, index) => {
+                step.classList.toggle('active', index + 1 === currentStep);
+            });
+            
+            // Actualizar botones
+            document.getElementById('prevBtn').disabled = currentStep === 1;
+            document.getElementById('nextBtn').textContent = currentStep === totalSteps ? 'Finalizar ✅' : 'Siguiente →';
+        }
+        
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateUI();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                alert('🎉 ¡Felicidades! Has completado el tutorial completo.\n\n¡Ahora tienes un sistema CRUD funcional con PHP y MVC!');
+            }
+        }
+        
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateUI();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+        
+        function showTab(tabName) {
+            // Ocultar todos los tab-content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remover clase active de todos los tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Mostrar el tab seleccionado
+            document.getElementById(tabName).classList.add('active');
+            
+            // Activar el botón correspondiente
+            event.target.classList.add('active');
+        }
+        
+        function showMvcTab(tabName) {
+            // Similar a showTab pero para los tabs de MVC
+            const parentContainer = event.target.closest('.highlight');
+            
+            parentContainer.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            parentContainer.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            parentContainer.querySelector(`#${tabName}`).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        function downloadFiles() {
+            alert('📁 En un proyecto real, aquí se descargaría un ZIP con todos los archivos del código fuente.\n\n🔧 Por ahora, puedes copiar el código de cada paso y crear los archivos manualmente.');
+        }
+        
+        function downloadDB() {
+            const sqlContent = `-- Script SQL para CRUD PHP MVC
+CREATE DATABASE mi_base_de_datos;
+USE mi_base_de_datos;
+
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+INSERT INTO usuarios (nombre, email) VALUES
+('Juan Pérez', 'juan@email.com'),
+('María González', 'maria@email.com'),
+('Carlos López', 'carlos@email.com');`;
+            
+            const blob = new Blob([sqlContent], { type: 'text/sql' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'base_datos.sql';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+        
+        // Navegación con teclado
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                nextStep();
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                previousStep();
+            }
+        });
+        
+        // Inicializar
+        updateUI();
+        
+        // Efectos adicionales
+        document.querySelectorAll('.code-block').forEach(block => {
+            block.addEventListener('click', function() {
+                navigator.clipboard.writeText(this.textContent).then(() => {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '📋 ¡Código copiado al portapapeles!';
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                    }, 2000);
+                });
+            });
+        });
+        
+        // Animaciones suaves para elementos que aparecen
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+        
+        document.querySelectorAll('.highlight, .warning, .success, .checklist').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'all 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
